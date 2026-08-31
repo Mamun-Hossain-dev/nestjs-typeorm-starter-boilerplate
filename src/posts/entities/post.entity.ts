@@ -27,7 +27,7 @@ export class Post {
   @CreateDateColumn()
   createdAt: Date;
 
-  // Many-to-One: এই সাইডেই actual foreign key column (user_id) থাকে
+  // Many-to-One: this side contains the actual foreign key column (user_id).
   @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   author: User;
@@ -35,10 +35,10 @@ export class Post {
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
 
-  // Many-to-Many: owning side, junction table এখান থেকেই তৈরি হয়
+  // Many-to-Many: owning side; the junction table is created from here.
   @ManyToMany(() => Tag, (tag) => tag.posts, { cascade: true })
   @JoinTable({
-    name: 'post_tags', // junction table এর নাম explicitly control করা
+    name: 'post_tags', // Explicitly control the junction table name.
     joinColumn: { name: 'post_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' },
   })

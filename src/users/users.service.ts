@@ -19,7 +19,7 @@ export class UsersService {
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
-    // business rule: duplicate email check — DB operation না, business logic
+    // Business rule: duplicate email check; this is business logic, not a DB operation.
     const existing = await this.usersRepository.findByEmail(dto.email)
     if (existing) {
       throw new ConflictException('Email already registered')

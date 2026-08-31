@@ -27,7 +27,7 @@ export class TagsService {
     return this.tagsRepository.findAll()
   }
 
-  // PostsService এই method কল করে tagIds কে actual Tag entity তে convert করবে
+  // PostsService calls this method to convert tagIds into actual Tag entities.
   findByIds(ids: number[]): Promise<Tag[]> {
     return this.tagsRepository.findByIds(ids)
   }

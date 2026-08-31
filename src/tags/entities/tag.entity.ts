@@ -9,7 +9,7 @@ export class Tag {
   @Column({ unique: true })
   name: string;
 
-  // Inverse side — এখানে @JoinTable() বসানো ভুল, শুধু owning side (Post) এ থাকবে
+  // Inverse side; @JoinTable() belongs only on the owning side (Post).
   @ManyToMany(() => Post, (post) => post.tags)
   posts: Post[];
 }

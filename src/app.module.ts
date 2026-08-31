@@ -9,11 +9,11 @@ import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // .env একবার লোড হয়ে সব জায়গায় পাওয়া যায়
+    ConfigModule.forRoot({ isGlobal: true }), // Loads .env once and makes it available everywhere.
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: typeOrmConfig, // DataSource তৈরি হওয়ার আগে env নিশ্চিতভাবে লোড হয়ে যায়
+      useFactory: typeOrmConfig, // Ensures the environment is loaded before creating the DataSource.
     }),
     UsersModule,
     PostsModule,

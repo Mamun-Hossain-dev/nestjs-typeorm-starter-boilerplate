@@ -18,7 +18,7 @@ export class PostsService {
   ) {}
 
   async create(dto: CreatePostDto): Promise<Post> {
-    // business orchestration: author validate + tags resolve — এইটা business logic, repository এর কাজ না
+    // Business orchestration: validate the author and resolve tags. This is business logic, not repository work.
     const author = await this.usersService.findOne(dto.authorId)
     const tags = await this.tagsService.findByIds(dto.tagIds ?? [])
 

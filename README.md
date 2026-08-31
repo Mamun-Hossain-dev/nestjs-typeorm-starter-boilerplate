@@ -4,7 +4,7 @@
 ```bash
 npm install
 cp .env.example .env
-docker-compose up -d          # PostgreSQL চালু
+docker-compose up -d          # Start PostgreSQL
 npm run migration:generate src/migrations/Init
 npm run migration:run
 npm run start:dev
@@ -12,11 +12,11 @@ npm run start:dev
 
 ## Architecture Decisions
 
-**Feature-based module structure** — প্রতিটা domain (User, Post, Comment, Tag) এর
-entity/dto/repository/service/controller একসাথে নিজের folder এ থাকে। Cross-domain কাজ
-(যেমন PostsService, UsersService ব্যবহার করে) module এর `exports` দিয়ে
-explicit ভাবে expose হয় — direct Repository access কখনো অন্য module এ leak হয় না।
-এটাই **Dependency Inversion** এবং **module encapsulation** এর বাস্তব প্রয়োগ।
+**Feature-based module structure** — Each domain (User, Post, Comment, Tag) keeps its
+entity/dto/repository/service/controller together in its own folder. Cross-domain
+dependencies (for example, using PostsService and UsersService) are explicitly exposed
+through the module's `exports`; direct Repository access never leaks into another module.
+This is a practical application of **Dependency Inversion** and **module encapsulation**.
 
 **Custom Repository Layer (3-layer separation)**
 
@@ -24,17 +24,17 @@ explicit ভাবে expose হয় — direct Repository access কখনো
 Controller  →  Service (business logic)  →  Repository (data access)  →  TypeORM  →  DB
 ```
 
-প্রতিটা module এ একটা আলাদা `*.repository.ts` ফাইল আছে যেটা শুধু raw DB operations
-রাখে (`findById`, `findByEmail`, `createQueryBuilder` ইত্যাদি)। `*.service.ts` কখনো
-TypeORM এর `Repository<T>` সরাসরি import করে না — শুধু নিজের Repository class জানে।
+Each module has a separate `*.repository.ts` file that contains only raw DB operations
+(`findById`, `findByEmail`, `createQueryBuilder`, etc.). `*.service.ts` never imports
+TypeORM's `Repository<T>` directly; it only knows about its own Repository class.
 
-কেন এই layer আলাদা করা হলো:
-- **Testability**: Service unit test করতে TypeORM mock করার দরকার নেই, শুধু simple Repository class mock করলেই হয়
-- **ORM independence**: TypeORM থেকে অন্য কোনো data layer এ move করলে শুধু Repository বদলাতে হবে, Service touch করা লাগবে না
-- **Business logic vs data access আলাদা থাকা**: `UsersService.create()` এ duplicate-email check (business rule) থাকে, কিন্তু actual `INSERT` query `UsersRepository` এ থাকে — mixing হয় না
+Why this layer is separated:
+- **Testability**: Unit testing a Service does not require mocking TypeORM; mocking a simple Repository class is enough.
+- **ORM independence**: If you move from TypeORM to another data layer, only the Repository needs to change; the Service remains untouched.
+- **Business logic vs data access separation**: `UsersService.create()` contains the duplicate-email check (business rule), while the actual `INSERT` query stays in `UsersRepository` — they are not mixed.
 
-Trade-off: ছোট CRUD app এ এই extra layer boilerplate বাড়ায়, কিন্তু team-based/
-long-term maintained backend এ এটা industry standard practice।
+Trade-off: This extra layer adds boilerplate to a small CRUD app, but it is industry-standard
+practice for team-based or long-term maintained backends.
 
 ## Relations Summary
 
@@ -46,9 +46,9 @@ long-term maintained backend এ এটা industry standard practice।
 | Post (N) — Tag (N) | Post (`@JoinTable`) | junction table `post_tags` |
 
 ## N+1 Prevention
-সব `findAll`/`findOne` এ `relations` option দিয়ে explicit JOIN করা হয়েছে,
-কোথাও loop এর ভেতরে আলাদা query চালানো হয়নি। `findByTagName` এ
-`QueryBuilder` দিয়ে filtering সহ single JOIN দেখানো হয়েছে।
+All `findAll`/`findOne` methods use the `relations` option for explicit JOINs;
+no separate queries are executed inside loops. `findByTagName` demonstrates a single
+JOIN with filtering through `QueryBuilder`.
 
 ## API Endpoints
 ```

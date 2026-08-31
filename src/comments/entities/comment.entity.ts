@@ -20,12 +20,12 @@ export class Comment {
   @CreateDateColumn()
   createdAt: Date;
 
-  // Comment -> User (কে লিখেছে)
+  // Comment -> User (author)
   @ManyToOne(() => User, (user) => user.comments, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   author: User;
 
-  // Comment -> Post (কোন পোস্টে)
+  // Comment -> Post (associated post)
   @ManyToOne(() => Post, (post) => post.comments, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'post_id' })
   post: Post;

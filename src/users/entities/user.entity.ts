@@ -22,7 +22,7 @@ export class User {
   @CreateDateColumn()
   createdAt: Date;
 
-  // "Many" পক্ষে (Post) foreign key থাকে, এই সাইডে শুধু inverse reference
+  // The foreign key is on the "many" side (Post); this side only holds the inverse reference.
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
 

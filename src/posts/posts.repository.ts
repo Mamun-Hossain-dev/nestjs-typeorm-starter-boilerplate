@@ -29,7 +29,7 @@ export class PostsRepository implements IPostsRepository {
     })
   }
 
-  // QueryBuilder logic এখন repository তে কেন্দ্রীভূত — Service জানেই না এটা কীভাবে হয়
+  // QueryBuilder logic is centralized in the repository; the Service does not need to know how it works.
   findByTagName(tagName: string): Promise<Post[]> {
     return this.repo
       .createQueryBuilder('post')

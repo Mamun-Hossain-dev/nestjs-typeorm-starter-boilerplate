@@ -7,7 +7,7 @@ import { Tag } from '../tags/entities/tag.entity';
 
 dotenv.config();
 
-// এটা শুধু CLI migration কমান্ডের জন্য — NestJS app runtime এর সাথে এর কোনো সম্পর্ক নেই
+// This is only for CLI migration commands; it is unrelated to the NestJS app runtime.
 export const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST,

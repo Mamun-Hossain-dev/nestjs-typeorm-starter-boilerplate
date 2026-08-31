@@ -5,7 +5,7 @@ import { Post } from '../posts/entities/post.entity';
 import { Comment } from '../comments/entities/comment.entity';
 import { Tag } from '../tags/entities/tag.entity';
 
-// forRootAsync এর জন্য factory function — ConfigService থেকে env নিরাপদে পড়ে
+// Factory function for forRootAsync; safely reads environment variables from ConfigService.
 export const typeOrmConfig = (config: ConfigService): TypeOrmModuleOptions => ({
   type: 'postgres',
   host: config.get<string>('DB_HOST'),
@@ -14,7 +14,7 @@ export const typeOrmConfig = (config: ConfigService): TypeOrmModuleOptions => ({
   password: config.get<string>('DB_PASSWORD'),
   database: config.get<string>('DB_NAME'),
   entities: [User, Post, Comment, Tag],
-  // production এ কখনোই true না — migration ব্যবহার করো
+  // Never set this to true in production; use migrations instead.
   synchronize: false,
   logging: config.get<string>('NODE_ENV') !== 'production',
 });
